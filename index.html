@@ -272,13 +272,9 @@
 				const url = 'https://script.google.com/macros/s/AKfycbwTwdNAk6oKE_qDs-yR43SAoq3iXkUNuvnavnALG_gwVvr8OyMzsq9dens_73XUXQZJ/exec?token=InsertEvent' + '&timezone='+Intl.DateTimeFormat().resolvedOptions().timeZone;
 				const response = await fetch(url, {
 				  method: 'POST', 
-				  mode: 'cors', 
-				credentials: 'omit',
+				  redirect: "follow",
 				  headers: {
 					'Content-Type': 'application/json',
-					  'Access-Control-Allow-Origin':  'https://kulfisoftwares.github.io',
-					'Access-Control-Allow-Methods': 'POST',
-					'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 				  },
 				  body: JSON.stringify(obj)
 				});
