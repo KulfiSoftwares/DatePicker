@@ -272,7 +272,7 @@
 				const url = 'https://script.google.com/macros/s/AKfycbwTwdNAk6oKE_qDs-yR43SAoq3iXkUNuvnavnALG_gwVvr8OyMzsq9dens_73XUXQZJ/exec?token=InsertEvent' + '&timezone='+Intl.DateTimeFormat().resolvedOptions().timeZone;
 				const response = await fetch(url, {
 				  method: 'POST', 
-				  mode: 'cors', 
+				  mode: 'no-cors', 
 				  headers: {
 					'Content-Type': 'application/json',
 					'X-Custom-Header': 'ProcessThisImmediately'
