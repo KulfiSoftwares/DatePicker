@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <meta charset="UTF-8">
+            <title>Datepicker</title>
+            
+            
+            
+            
+            <link rel="stylesheet"
+                href="wbn-datepicker.css">
+                
+            </head>
+    
+    <body>
+        <br>
+        <div class="container">
+            <div class="col-md-6 offset-md-3">
+                <input id="clickMe" type="button" value="Add to cart" onclick="loadData();"/>
+                <input id="clickMe" type="button" value="Submit Form" onclick="submitForm();"/>
+                <strong>Output</strong>
+                <form action="">
+                    <div class="form-group">
+                        <label for="simple">Simple</label>
+                        <input type="text"
+                        id="simple"
+                        name="simple"
+                        class="form-control wbn-datepicker" />
+                    </div>
+                </form>
+                
+                
+            </div>
+        </div>
+        
+        
+        <script src="wbn-datepicker.js"></script>
+        <script type="text/javascript">
+            //document.querySelector('.wbn-datepicker').value = '2023-01-12'
+            
+            //document.querySelector('.wbn-datepicker').value = '2023-01-12'
+            datepicker(document.querySelector('.wbn-datepicker'))
+            
+            //document.querySelector('.views-wrapper').setAttribute("class", "views-wrapper time")
+                       //  var $jsDatepicker = $('#value-specified-js').datepicker()
+                       
+                       
+        </script>
+        
+        <script>
+            var calendarID = 'CALENDAR ID';
+            var apiKey = 'something certification';
+            
+            var eventTitle = 'New event';
+            var eventDescription = 'This is a description for the event'
+            
+            var settings = {
+                startOfWeek:0, //0 = Sunday, 1 = Monday
+                timeSlotGap: '2:30',
+                minTime: "09:00",
+                maxTime: "19:30",
+                numSlots: 0
+            };
+            
+            function getTimeDate(time) {
+                var timeParts = time.split(':');
+                var d = new Date();
+                
+                d.setHours(timeParts[0]);
+                d.setMinutes(timeParts[1]);
+                //d.setSeconds(timeParts[2]);
+                
+                return d;
+            }
+            
+            function getTimeSlots(startDate, endDate, interval) {
+                var slots = [];
+                
+                var timeParts = interval.split(':');
+                var intervalTime = parseInt(timeParts[0]) * 60 + parseInt(timeParts[1])
+                console.log(intervalTime)
+                var intervalMillis = intervalTime * 60 * 1000;
+                
+                while (startDate <= endDate) {
+                    // So that you get "00" if we're on the hour.
+                    var mins = (startDate.getMinutes() + '0').slice(0, 2);
+                    slots.push(startDate.getHours() + ':' + mins);
+                    startDate.setTime(startDate.getTime() + intervalMillis);
+                }
+                
+                return slots;
+            }
+            
+            var slots = getTimeSlots(getTimeDate(settings.minTime), getTimeDate(settings.maxTime), settings.timeSlotGap);
+            
+            var start_time= document.createElement("input");
+            start_time.type = "hidden"
+            start_time.id = "start_time"
+            start_time.setAttribute("name","start_time")
+            
+            var end_time= document.createElement("input");
+            end_time.type = "hidden"
+            end_time.id = "end_time"
+            end_time.setAttribute("name","end_time")
+            document.querySelector(".wbn-datepicker-wrapper").appendChild(start_time)
+            document.querySelector(".wbn-datepicker-wrapper").appendChild(end_time)
+            var timeWraper = document.createElement("div");
+            timeWraper.classList.add("datepicker-view")
+            timeWraper.classList.add("time-view");
+            
+            var ul = document.createElement("ul");
+            for(i=0; i<slots.length; i++){
+                let li = document.createElement("li");
+                li.innerText = slots[i];
+                li.setAttribute("data-index",i);
+                li.classList.add("selectable")
+                ul.appendChild(li);
+            }
+            timeWraper.appendChild(ul)
+            document.querySelector(".views-wrapper").appendChild(timeWraper)
+            
+            
+            document.addEventListener("click", function(e){
+                const target = e.target.closest(".week li.selectable");
+                const target2 = e.target.closest(".time li");
+                const target3 = e.target.closest(".time_i");
+                if(target3){
+                    document.querySelector(".views-wrapper").classList.add("time");
+                    document.querySelector(".views-wrapper").classList.remove("week");
+                }
+                
+                if(target){
+                    document.querySelector(".views-wrapper").classList.add("time");
+                    document.querySelector(".views-wrapper").classList.remove("week");
+                    removeAllTimenode();
+                    clearAllslection();
+                }
+                
+                if(target2){
+                    if(target2.classList.contains("selectted")){
+                        target2.classList.remove("selectted")
+                        makeTeimeings(parseInt(target2.getAttribute('data-index')),2);
+                        
+                    }else{
+                        target2.classList.add("selectted")
+                        makeTeimeings(parseInt(target2.getAttribute('data-index')),1);
+                    }
+                }
+            });
+            
+            
+            
+            function clearAllslection(){
+                slectedNodes = document.querySelectorAll(".time-view li.selectted");
+                for(i=0; i<slectedNodes.length; i++){
+                    slectedNodes[i].classList.remove("selectted")
+                }
+            }
+            function makeTeimeings(current,operation) {
+                
+                
+                
+                slectedNodes = document.querySelectorAll(".time-view li.selectted");
+                
+                if(slectedNodes.length <=0){
+                    removeAllTimenode();
+                    return
+                }
+                nodes = document.querySelectorAll(".time-view li");
+                firstsectd = slectedNodes[0]
+                lastSlected = parseInt(slectedNodes[slectedNodes.length-1].getAttribute("data-index"));
+                totalnodes = document.querySelectorAll(".time-view li").length
+                isfrist = 1;
+                
+                
+                if(operation == 2 && current>parseInt(firstsectd.getAttribute("data-index"))){
+                    
+                    lastSlected = current-1;
+                    for(i=lastSlected+1; i<totalnodes; i++){
+                        nodes[i].classList.remove("selectted")
+                    }
+                    
+                }
+                
+                
+                removeAllTimenode();
+                for(i=0; i<totalnodes; i++){
+                    
+                    if(nodes[i].classList.contains("selectted") && isfrist == 1){
+                        isfrist =0;
+                        createTimeNode(nodes[i].innerText,1);
+                        if(slectedNodes.length == 1 && i != totalnodes-1){
+                            createTimeNode(nodes[i+1].innerText,2);
+                            return
+                            
+                        }
+                    }
+                    if(isfrist ==0 && i<lastSlected){
+                        if(!(nodes[i].classList.contains("selectted") )){
+                            nodes[i].classList.add("selectted")
+                        }
+                        
+                    }
+                    
+                    
+                }
+                if(lastSlected+1 != totalnodes){
+                    createTimeNode(nodes[lastSlected+1].innerText,2);
+                }else{
+                    createTimeNode(nodes[lastSlected].innerText,2);
+                }
+            }
+            
+            
+            
+            function removeAllTimenode(){
+                start_time = document.getElementById("start_time")
+                end_time = document.getElementById("end_time")
+                start_time.value = ''
+                end_time.value = ''
+                
+                
+                document.querySelectorAll(".time_i").forEach(function(el){
+                    el.remove();
+                })
+            }
+            
+            function createTimeNode(text,number){
+                let input = document.createElement("div");
+                input.innerText  = text
+                input.setAttribute("readonly",true);
+                input.setAttribute("data-name",text);
+                input.classList.add("time_i")
+                document.querySelector(".wbn-datepicker-controls").appendChild(input)
+                if(number ==1){
+                    start_time.value = text;
+                }else{
+                    end_time.value = text
+                }
+            }
+            
+            function modifySelectionRange(element, isRemove, isEnding) {
+                if (isRemove) {
+                    element.classList.remove("starttime")
+                    element.classList.remove("endtime")
+                } else {
+                    if (isEnding) {
+                        element.classList.add("endtime")
+                    } else {
+                        element.classList.add("starttime")
+                    }
+                }
+            }
+            
+            function loadData() {
+                start_time = document.getElementById("start_time")
+                end_time = document.getElementById("end_time")
+                console.log(document.getElementById("simple").value + ' ' + start_time.value + ' - ' + end_time.value )
+                
+                const myObj = { date: [document.getElementById("simple").value], startTime: [start_time.value], endTime: [end_time.value] };
+                const myJSON = JSON.stringify(myObj);
+                localStorage.setItem("productID", myJSON);
+            }
+            
+            async function submitForm() {
+                let text = localStorage.getItem("productID");
+                let obj = JSON.parse(text);
+                
+                console.log(obj);
+				const data = { username: 'example' };
+
+				const response = await fetch('https://script.google.com/macros/s/AKfycbwTwdNAk6oKE_qDs-yR43SAoq3iXkUNuvnavnALG_gwVvr8OyMzsq9dens_73XUXQZJ/exec?token=InsertEvent', {
+				  method: 'POST', 
+				  mode: 'no-cors', 
+				  headers: {
+					'Content-Type': 'text/plain',
+					'X-Custom-Header': 'ProcessThisImmediately'
+				  },
+				  body: JSON.stringify(data)
+				});
+				console.log(response);
+				  
+            }
+        </script>
+    </body>
+</html>
