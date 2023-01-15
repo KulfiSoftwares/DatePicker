@@ -272,7 +272,6 @@
 				const url = 'https://script.google.com/macros/s/AKfycbzuVpKPFz7JIWT4PSYcqnwZZ_Gta1NMRlnsXAI3DOD0ZHL0rdS4DMiPOKR_ON79AP8L/exec?token=InsertEvent' + '&timezone='+Intl.DateTimeFormat().resolvedOptions().timeZone;
 				const response = await fetch(url, {
 				  method: 'GET', 
-				  redirect: "follow",
 				  headers: {
 					'Content-Type': 'application/json',
 				  }				  
