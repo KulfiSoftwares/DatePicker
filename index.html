@@ -267,9 +267,36 @@
                 let text = localStorage.getItem("productID");
                 let obj = JSON.parse(text);
                 
+				//let timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+				let title = "Test Event";
+				let description = "Web App Date Picker";
+				
+				if(obj["date"].length<1){
+					console.log("Date is empty");
+					return;
+				}
+				
+				for(var i=0;i<obj["date"].length;i++){
+					let startTime = obj["startTime"][i];
+					let endTime = obj["endTime"][i];
+					let date = obj["date"][i];
+					createEvent(date,startTime,endTime,title,description);
+				}
+				
                 console.log(obj);
-				const data = { username: 'example' };
-				const url = 'https://script.google.com/macros/s/AKfycbw8bmjm3Nlav3VbotbxL29J4hEYfWMTpx0ps5lg7TP-teuS8N7L10bm0MTgvLGiDpgy/exec?token=InsertEvent' + '&timezone='+Intl.DateTimeFormat().resolvedOptions().timeZone;
+						
+				  
+            }
+			
+			async function createEvent(date,startTime,endTime,title,description){
+			
+				const url = 'https://script.google.com/macros/s/AKfycbyEmLkwznbtJX17vgTSQzP5bpad8mrhIcAXMR828zjtv7qyEfa8rM-ro16FBmlw7Mxc/exec' 
+				+ '&date=' + date 
+				+ '&startTime=' + startTime
+				+ '&endTime=' + endTime
+				+ '&title=' + title
+				+ '&description=' + description
+				 ;
 				const response = await fetch(url, {
 				  method: 'GET', 
 				  headers: {
@@ -277,8 +304,8 @@
 				  }				  
 				});
 				console.log(response.json());
-				  
-            }
+			}
         </script>
     </body>
 </html>
+
